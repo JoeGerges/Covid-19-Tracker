@@ -9,31 +9,32 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
-    private static final String TABLE_NAME = "covid_patients";
-    private static final String COL0 = "patient_id";
-    private static final String COL1 = "patient_name";
-    private static final String COL2 = "phone_number";
-    private static final String COL3 = "mac_address";
+    private static final String PATIENTS_TABLE_NAME = "covid_patients";
+    private static final String PATIENTS_PHONE = "phone_number";
+    private static final String PATIENTS_NAME = "patient_name";
+    private static final String PATIENTS_MAC = "mac_address";
 
     public DatabaseHelper(@Nullable Context context) {
-        super(context, TABLE_NAME, null, 1);
+        super(context, PATIENTS_TABLE_NAME, null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL1 + " TEXT, " +
-                COL2 + " TEXT, " +
-                COL3 + " TEXT)";
+        String createTable = "CREATE TABLE " + PATIENTS_TABLE_NAME + " ( "+ PATIENTS_PHONE + " TEXT PRIMARY KEY, " +
+                PATIENTS_NAME + " TEXT, " +
+                PATIENTS_MAC + " TEXT)";
         db.execSQL(createTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String dropTable = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        String dropTable = "DROP TABLE IF EXISTS " + PATIENTS_TABLE_NAME;
         db.execSQL(dropTable);
         onCreate(db);
     }
@@ -42,13 +43,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL1, patient.getName());
-        values.put(COL2, patient.getNumber());
-        values.put(COL3, patient.getMac());
+        values.put(PATIENTS_PHONE, patient.getNumber());
+        values.put(PATIENTS_NAME, patient.getName());
+        values.put(PATIENTS_MAC, patient.getMac());
 
-        Log.d(TAG, "addPatient: adding patient " + patient.getName() + " to " + TABLE_NAME);
+        Log.d(TAG, "addPatient: adding patient " + patient.getName() + " to " + PATIENTS_TABLE_NAME);
 
-        long result = db.insert(TABLE_NAME, null, values);
+        long result = db.insert(PATIENTS_TABLE_NAME, null, values);
 
         if (result == -1) {
             return false;
@@ -57,10 +58,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public void getPatient(String phone)
+    public Patient getPatient(String phone)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String getPatient = "SELECT * FROM "+ TABLE_NAME;
-        Cursor data = db.rawQuery(getPatient, null);
+        SQLiteDatabase db = this.getReadableDatabase();
+        String getPatient = "SELECT * FROM "+ PATIENTS_TABLE_NAME;
+
+        Cursor cursor = db.query(PATIENTS_TABLE_NAME, new String[] { PATIENTS_PHONE,
+                        PATIENTS_NAME, PATIENTS_MAC }, PATIENTS_PHONE + "=?",
+                new String[] { phone }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Patient patient = new Patient(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+
+        return patient;
+    }
+
+    public List<Patient> getAllPatients() {
+        List<Patient> patientList = new ArrayList<Patient>();
+        String selectQuery = "SELECT * FROM " + PATIENTS_TABLE_NAME;
+
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Patient patient = new Patient(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                patientList.add(patient);
+            } while (cursor.moveToNext());
+        }
+
+        return patientList;
     }
 }
