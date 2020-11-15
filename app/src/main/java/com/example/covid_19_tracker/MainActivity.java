@@ -2,6 +2,8 @@ package com.example.covid_19_tracker;
 
 import android.os.Bundle;
 
+import com.example.covid_19.DatabaseHelper;
+import com.example.covid_19.Patient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -12,24 +14,62 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    DatabaseHelper myDatabaseHelper;
+    private EditText name, phone, mac;
+    private Button addPatient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        myDatabaseHelper = new DatabaseHelper(this);
+
+        addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                String patient_name = name.getText().toString();
+                String patient_phone = phone.getText().toString();
+                String patient_mac = mac.getText().toString();
+                
+                if (patient_name.length() != 0 || patient_phone.length() != 0 || patient_mac.length() != 0)
+                {
+                    Patient patient = new Patient(patient_name, patient_phone, patient_phone);
+                    addData(patient);
+                }
+                else
+                {
+                    toastMessage("All fields must be entered");
+                }
             }
+            
         });
+    }
+
+    public void addData(Patient patient)
+    {
+        boolean result = myDatabaseHelper.addPatient(patient);
+
+        if (result)
+        {
+            toastMessage("Successfully added the new patient to the database");
+        }
+        else
+        {
+            toastMessage("Error in adding the new patient to the database");
+        }
+    }
+
+    private void toastMessage(String message)
+    {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
