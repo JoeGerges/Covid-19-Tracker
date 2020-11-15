@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper myDatabaseHelper;
@@ -64,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
         {
             toastMessage("Error in adding the new patient to the database");
         }
+    }
+
+    public Patient getPatient(String phone_number)
+    {
+        return myDatabaseHelper.getPatient(phone_number);
+    }
+
+    public List<Patient> getAllPatients()
+    {
+        return myDatabaseHelper.getAllPatients();
     }
 
     private void toastMessage(String message)
