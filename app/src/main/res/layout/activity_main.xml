@@ -15,8 +15,25 @@
             android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/editText"
-            android:gravity="center_horizontal" />
+            android:id="@+id/name"
+            android:gravity="center_horizontal"
+            android:text="Name" />
+        <EditText
+            android:layout_marginTop="200dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/phone"
+            android:gravity="center_horizontal"
+            android:text="Phone Number" />
+        <EditText
+            android:layout_marginTop="300dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/mac"
+            android:gravity="center_horizontal"
+            android:text="Mac Address" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -26,18 +43,11 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:layout_marginLeft="70dp"
+            android:layout_marginLeft="140dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnAdd"
-            android:text="Add"/>
-        <Button
-            android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnView"
-            android:text="View Data"
-            android:layout_toRightOf="@+id/btnAdd"/>
+            android:id="@+id/addPatient"
+            android:text="Add Patient"/>
 
     </RelativeLayout>
 

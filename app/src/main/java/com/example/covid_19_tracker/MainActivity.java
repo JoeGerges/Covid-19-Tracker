@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         myDatabaseHelper = new DatabaseHelper(this);
 
         addPatient.setOnClickListener(new View.OnClickListener() {
