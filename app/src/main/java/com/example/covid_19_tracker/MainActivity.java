@@ -2,10 +2,11 @@ package com.example.covid_19_tracker;
 
 import android.os.Bundle;
 
-import com.example.covid_19.DatabaseHelper;
-import com.example.covid_19.Patient;
+import com.example.covid_19_tracker.DatabaseHelper;
+import com.example.covid_19_tracker.Patient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -23,14 +25,18 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper myDatabaseHelper;
-    private EditText name, phone, mac;
-    private Button addPatient;
+    private TextInputEditText name, phone, mac;
+    private Button addPatient, viewPatients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        name = (TextInputEditText) findViewById(R.id.name);
+        phone = (TextInputEditText) findViewById(R.id.phone);
+        mac = (TextInputEditText) findViewById(R.id.mac);
+        addPatient = (Button) findViewById(R.id.addPatient);
+        viewPatients = (Button) findViewById(R.id.viewPatients);
         myDatabaseHelper = new DatabaseHelper(this);
 
         addPatient.setOnClickListener(new View.OnClickListener() {

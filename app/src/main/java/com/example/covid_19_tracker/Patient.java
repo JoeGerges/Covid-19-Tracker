@@ -1,4 +1,4 @@
-package com.example.covid_19;
+package com.example.covid_19_tracker;
 
 public class Patient {
     private String name;

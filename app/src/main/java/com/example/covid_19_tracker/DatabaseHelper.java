@@ -1,4 +1,4 @@
-package com.example.covid_19;
+package com.example.covid_19_tracker;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.example.covid_19.Patient;
+import com.example.covid_19_tracker.Patient;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -77,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<Patient> getAllPatients() {
-        List<com.example.covid_19.Patient> patientList = new ArrayList<Patient>();
+        List<Patient> patientList = new ArrayList<Patient>();
         String selectQuery = "SELECT * FROM " + PATIENTS_TABLE_NAME;
 
         SQLiteDatabase db = getWritableDatabase();

@@ -1,54 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    tools:context=".FirstFragment">
 
-    <RelativeLayout
+
+    <Button
+        android:id="@+id/addPatient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout1">
-        <EditText
-            android:layout_marginTop="100dp"
-            android:textAlignment="center"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/add_patient"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/viewPatients"
+        app:layout_constraintHorizontal_bias="0.205"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="167dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name"
-            android:gravity="center_horizontal"
-            android:text="Name" />
-        <EditText
-            android:layout_marginTop="200dp"
-            android:textAlignment="center"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/phone"
-            android:gravity="center_horizontal"
-            android:text="Phone Number" />
-        <EditText
-            android:layout_marginTop="300dp"
-            android:textAlignment="center"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/mac"
-            android:gravity="center_horizontal"
-            android:text="Mac Address" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/relativeLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_marginLeft="140dp"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/addPatient"
-            android:text="Add Patient"/>
+            android:hint="@string/name" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </RelativeLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
-</RelativeLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone_number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="202dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="202dp"
+        app:layout_constraintBottom_toTopOf="@+id/addPatient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/mac"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mac_address" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/viewPatients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/view_patients"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/addPatient" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
