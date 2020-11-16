@@ -71,13 +71,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Patient patient = new Patient(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+        Patient patient = new Patient(cursor.getString(1), cursor.getString(0), cursor.getString(2));
 
         return patient;
     }
 
-    public List<Patient> getAllPatients() {
-        List<Patient> patientList = new ArrayList<Patient>();
+    public ArrayList<Patient> getAllPatients() {
+        ArrayList<Patient> patientList = new ArrayList<Patient>();
         String selectQuery = "SELECT * FROM " + PATIENTS_TABLE_NAME;
 
         SQLiteDatabase db = getWritableDatabase();
@@ -85,12 +85,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Patient patient = new Patient(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+                Patient patient = new Patient(cursor.getString(1), cursor.getString(0), cursor.getString(2));
                 patientList.add(patient);
             } while (cursor.moveToNext());
         }
 
         return patientList;
+    }
+
+    public void deletePatient(String phone)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(PATIENTS_TABLE_NAME, PATIENTS_PHONE + "=" + phone, null);
+    }
+
+    public int checkCases(ArrayList<Patient> connections)
+    {
+        int cases = 0;
+
+        for(Patient p: connections)
+        {
+            Patient result = getPatient(p.getNumber());
+            if(result != null)
+            {
+                cases++;
+            }
+        }
+
+        return cases;
     }
 }
 

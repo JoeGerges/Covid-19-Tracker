@@ -14,4 +14,11 @@
     <string name="name">Name</string>
     <string name="phone_number">Phone Number</string>
     <string name="view_patients">View Patients</string>
+    <string name="ap_ip_address">AP IP Address</string>
+    <string name="port_number">Port Number</string>
+    <string name="connect">Connect</string>
+    <string name="check_covid_patients">Check Covid Patients</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect_to_ap">Connect to AP</string>
+    <string name="alert_received">Alert Received!</string>
 </resources>

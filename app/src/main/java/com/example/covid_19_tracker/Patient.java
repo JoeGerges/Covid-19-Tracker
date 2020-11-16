@@ -26,4 +26,10 @@ public class Patient {
     {
         return this.mac_address;
     }
+
+    @Override
+    public String toString()
+    {
+        return name + "\n" + phone_number + "\n" + mac_address;
+    }
 }
