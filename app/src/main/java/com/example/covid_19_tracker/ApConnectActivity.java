@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -24,13 +26,14 @@ public class ApConnectActivity extends AppCompatActivity {
 
     DatabaseHelper myDatabaseHelper;
     private TextInputEditText txtIpAddress, txtPortNumber;
-    private Button btnConnect, btnCheck;
-    int SERVER_PORT;
+    private Button btnConnect;
+    int SERVER_PORT, totalCases;
     String SERVER_IP;
     Thread Thread1 = null;
     private ArrayList<Patient> connectivityList;
     private TextView alertTextView;
     private boolean connected = false;
+    public String serverResponse = "";
 
     public void alert(String message, String title)
     {
@@ -65,7 +68,6 @@ public class ApConnectActivity extends AppCompatActivity {
         txtIpAddress = (TextInputEditText) findViewById(R.id.txtIpAddress);
         txtPortNumber = (TextInputEditText) findViewById(R.id.txtPortNumber);
         btnConnect = (Button) findViewById(R.id.btnConnect);
-        btnCheck = (Button) findViewById(R.id.btnCheck);
         alertTextView = (TextView) findViewById(R.id.AlertTextView2);
 
         btnConnect.setOnClickListener(new View.OnClickListener() {
@@ -82,105 +84,67 @@ public class ApConnectActivity extends AppCompatActivity {
                     Thread1.start();
                 }
                 else {
-                    System.out.println("here");
                     alert("Fields are missing", "Error");
                 }
 
             }
         });
-
-        btnCheck.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(connected) {
-                    String message = "GetConnectivityList";
-                    new Thread(new Thread3(message)).start();
-                    int cases = myDatabaseHelper.checkCases(connectivityList);
-                    alert("The total number of covid patients who were connected to this AP is: " + cases, "Results");
-                }
-                else {
-                    alert("Please connect to Access Point first", "Connection Error");
-                }
-            }
-        });
-
     }
 
-    private PrintWriter output;
-    private BufferedReader input;
+    private DataOutputStream output;
+    private DataInputStream input;
     class Thread1 implements Runnable {
         public void run() {
             Socket socket;
             try {
                 socket = new Socket(SERVER_IP, SERVER_PORT);
-                output = new PrintWriter(socket.getOutputStream());
-                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                connectivityList = new ArrayList<>();
+                output = new DataOutputStream(socket.getOutputStream());
+                input = new DataInputStream(socket.getInputStream());
+                output.writeUTF("GetConnectivityList");
+
+                String apResponse = input.readUTF();
+
+                if(!apResponse.equals("empty")) {
+                    String[] allUsers = apResponse.split("/");
+                    for (String user : allUsers) {
+                        if (user != null) {
+                            String userDetails[] = user.split("-");
+                            connectivityList.add(new Patient(userDetails[0], userDetails[1], userDetails[2]));
+                        }
+                    }
+                }
+
+                totalCases = myDatabaseHelper.checkCases(connectivityList);
+                System.out.println(totalCases);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        alert("Successfully connected to Access Point " + SERVER_IP + ":" + SERVER_PORT, "Success");
-                        connected=true;
+                        if(totalCases == 0)
+                        {
+                            alert("No Covid-19 infected patients were connected to this access point.", "SAFE");
+                        }
+                        else
+                        {
+                            alert("Be safe, " + totalCases + " covid-19 infected patients were connected to this access point.", "WARNING");
+                        }
                     }
                 });
-                new Thread(new Thread2()).start();
+
+                input.close();
+                output.close();
+                socket.close();
             } catch (IOException e) {
-                alert("Unable to connect to Access Point " + SERVER_IP + ":" + SERVER_PORT, "Error");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        alert("Unable to connect to Access Point " + SERVER_IP + ":" + SERVER_PORT, "Error");
+                    }
+                });
                 e.printStackTrace();
             }
         }
     }
-    class Thread2 implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                try {
-                    final String message = input.readLine();
-                    if (message != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                alert("server: " + message + "\n", "Server Response");
-                            }
-                        });
-                    } else {
-                        Thread1 = new Thread(new Thread1());
-                        Thread1.start();
-                        return;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    class Thread3 implements Runnable {
-        private String message;
-        Thread3(String message) {
-            this.message = message;
-        }
-        @Override
-        public void run() {
-            output.write(message);
-            output.flush();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    connectivityList = new ArrayList<Patient>();
-                    while (true) {
-                        try {
-                            final String patient = input.readLine();
-                            String[] patientDetails = patient.split("-");
-                            if (patientDetails[0].length() != 0 && patientDetails[1].length() != 0 && patientDetails[2].length() != 0) {
-                                connectivityList.add(new Patient(patientDetails[0], patientDetails[1], patientDetails[2]));
-                            } else {
-                                return;
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        }
-    }
+
+
 }

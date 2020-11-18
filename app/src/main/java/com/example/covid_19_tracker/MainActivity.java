@@ -99,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public Patient getPatient(String phone_number)
+    public Patient getPatient(String name, String phone, String mac)
     {
-        return myDatabaseHelper.getPatient(phone_number);
+        return myDatabaseHelper.getPatient(name, phone, mac);
     }
 
     public List<Patient> getAllPatients()

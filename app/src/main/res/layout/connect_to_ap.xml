@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
-        android:layout_marginTop="101dp"
+        android:layout_marginTop="102dp"
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="90dp"
@@ -56,21 +56,14 @@
         android:id="@+id/btnConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connect"
-        app:layout_constraintBaseline_toBaselineOf="@+id/AlertTextView2"
-        app:layout_constraintEnd_toEndOf="@+id/btnCheck"
-        app:layout_constraintStart_toStartOf="@+id/btnCheck" />
-
-    <Button
-        android:id="@+id/btnCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
-        android:layout_marginTop="17dp"
-        android:text="@string/check_covid_patients"
-        app:layout_constraintStart_toStartOf="@+id/AlertTextView2"
-        app:layout_constraintTop_toBottomOf="@+id/btnConnect" />
+        android:layout_marginStart="139dp"
+        android:layout_marginLeft="139dp"
+        android:layout_marginEnd="140dp"
+        android:layout_marginRight="140dp"
+        android:text="@string/check_risk"
+        app:layout_constraintEnd_toEndOf="@+id/AlertTextView2"
+        app:layout_constraintStart_toStartOf="@+id/txtPortNumber"
+        app:layout_constraintTop_toTopOf="@+id/AlertTextView2" />
 
     <TextView
         android:id="@+id/AlertTextView2"

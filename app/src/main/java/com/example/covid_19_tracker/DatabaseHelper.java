@@ -59,20 +59,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Patient getPatient(String phone)
+    public Patient getPatient(String name, String phone, String mac)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String getPatient = "SELECT * FROM "+ PATIENTS_TABLE_NAME;
 
         Cursor cursor = db.query(PATIENTS_TABLE_NAME, new String[] { PATIENTS_PHONE,
-                        PATIENTS_NAME, PATIENTS_MAC }, PATIENTS_PHONE + "=?",
-                new String[] { phone }, null, null, null, null);
+                        PATIENTS_NAME, PATIENTS_MAC }, PATIENTS_PHONE + "=? and " + PATIENTS_NAME + "=? and " + PATIENTS_MAC + "=?",
+                new String[] { phone, name, mac }, null, null, null, null);
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        if(cursor.getCount() <= 0)
+            return null;
 
+
+        cursor.moveToFirst();
         Patient patient = new Patient(cursor.getString(1), cursor.getString(0), cursor.getString(2));
-
         return patient;
     }
 
@@ -103,9 +104,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         int cases = 0;
 
+        if(connections.isEmpty())
+            return cases;
+
         for(Patient p: connections)
         {
-            Patient result = getPatient(p.getNumber());
+            Patient result = getPatient(p.getName(), p.getNumber(), p.getMac());
             if(result != null)
             {
                 cases++;
