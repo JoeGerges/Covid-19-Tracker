@@ -1,23 +1,14 @@
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.awt.print.PrinterException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Server {
+public class AccessPoint {
 	public static Connection conn;
-	private ArrayList<Patient> connectivityList;
+	private static ArrayList<Patient> connectivityList;
 	private int port = 3602;
 	private ServerSocket serverSocket;
 
@@ -29,7 +20,7 @@ public class Server {
 		} 
 		catch (IOException e) 
 		{
-			System.err.println("ServerSocket instantiation failure");
+			System.err.println("AccessPointSocket instantiation failure");
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -43,23 +34,21 @@ public class Server {
 			} 
 			catch (IOException ioe) 
 			{
-				System.err.println("server accept failed");
+				System.err.println("AccessPoint accept failed");
 			}
 		}
 	} 
 
 	public static void main(String args[]) throws ClassNotFoundException 
 	{
-		ArrayList<Patient> connectivityList = new ArrayList<Patient>();
-		connectivityList.add(createPatient("Sara", "213465", "m1"));
-		connectivityList.add(createPatient("Joe", "124365", "m2"));
+		connectivityList = new ArrayList<Patient>();
+		connectivityList.add(createPatient("Sara El Hakim", "71900300", "2a:5c:3b:7f:8d"));
+		connectivityList.add(createPatient("Joe Gerges", "71814106", "1a:2b:3c:4d:5e"));
 		connectivityList.add(createPatient("Khalil", "123465", "m3"));
-		Server server = null;
-		// Instantiate an object of this class. This will load the JDBC database driver
-		server = new Server();
-		// call this function, which will start it all...
+		AccessPoint AccessPoint = null;
+		AccessPoint = new AccessPoint();
 		System.out.println("Waiting for clients ...");
-		server.acceptConnections();
+		AccessPoint.acceptConnections();
 	}
 	
 	public static Patient createPatient(String name, String phoneNumber, String macAddress) 
@@ -72,48 +61,51 @@ public class Server {
 	class ServerThread implements Runnable 
 	{
 		private Socket socket;
-		private DataInputStream datain;
-		private OutputStream outToClient;
+		private DataInputStream fromClient;
+		private DataOutputStream outToClient;
 
 		public ServerThread(Socket socket) 
 		{
-			// Inside the constructor: store the passed object in the data member
 			this.socket = socket;
 		}
 
-		////////////////////////////////////
-		// This is where you place the code you want to run in a thread
-		// Every instance of a ServerThread will handle one client (TCP connection)
+
 		public void run()
 		{
 			try 
 			{
-				// Input and output streams, obtained from the member socket object
-				datain = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-				outToClient = socket.getOutputStream();
+				fromClient = new DataInputStream(socket.getInputStream());
+				outToClient = new DataOutputStream(socket.getOutputStream());
 			} 
 			catch (IOException e) 
 			{
 				return;
 			}
 
-			byte[] ba = new byte[256];
+	
 			boolean conversationActive = true;
-			String fromClient;
+			
 			while (conversationActive) 
 			{	
 				try 
 				{
-					// read from the input stream buffer (read a message from client)
-					datain.read(ba, 0, 256);
-					fromClient = new String(ba);
-
-					if (fromClient.equals("GetConnectivityList")) 
+					String input = (String) fromClient.readUTF();
+					String toClient = "";
+					if(input.equals("GetConnectivityList")) 
 					{
-						PrintWriter p = new PrintWriter(outToClient, true);
-						for (Patient pat : connectivityList)
+						if(connectivityList.isEmpty())
 						{
-							p.println(pat.toString());
+							outToClient.writeUTF("empty");
+						}
+						
+						
+						else {
+							for (Patient p : connectivityList)
+							{
+								toClient += p.toString() + "/";
+							}
+							System.out.println("Sending the connectivity list...");
+							outToClient.writeUTF(toClient);
 						}
 					}
 				}
@@ -126,9 +118,8 @@ public class Server {
 			try
 			{
 				System.out.println("closing socket");
-				datain.close();
+				fromClient.close();
 				outToClient.close();
-				// When the server receives a "Q", we arrive here
 				socket.close();
 			} 
 			catch (IOException e)
