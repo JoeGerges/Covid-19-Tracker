@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ListPatientsActivity"></activity>
+        <activity android:name=".ListSurroundingsActivity"></activity>
         <activity android:name=".ApConnectActivity"></activity>
     </application>
 

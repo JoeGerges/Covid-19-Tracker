@@ -100,23 +100,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(PATIENTS_TABLE_NAME, PATIENTS_PHONE + "=" + phone, null);
     }
 
-    public int checkCases(ArrayList<Patient> connections)
+    public ArrayList<Patient> checkCases(ArrayList<Patient> connections)
     {
-        int cases = 0;
+        ArrayList<Patient> infected = new ArrayList<>();
 
         if(connections.isEmpty())
-            return cases;
+            return infected;
 
         for(Patient p: connections)
         {
             Patient result = getPatient(p.getName(), p.getNumber(), p.getMac());
             if(result != null)
             {
-                cases++;
+                infected.add(result);
             }
         }
 
-        return cases;
+        return infected;
     }
 }
 

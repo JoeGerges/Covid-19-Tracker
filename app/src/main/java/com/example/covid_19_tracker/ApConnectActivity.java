@@ -1,6 +1,7 @@
 package com.example.covid_19_tracker;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ public class ApConnectActivity extends AppCompatActivity {
     private TextView alertTextView;
     private boolean connected = false;
     public String serverResponse = "";
+    private ArrayList<Patient> infectedPatients;
 
     public void alert(String message, String title)
     {
@@ -50,12 +52,32 @@ public class ApConnectActivity extends AppCompatActivity {
             }
         });
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                alertTextView.setVisibility(View.VISIBLE);
-            }
-        });
+        if(infectedPatients.isEmpty() || title.equals("Error"))
+        {
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    alertTextView.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+        else {
+            builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    alertTextView.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(ApConnectActivity.this, ListSurroundingsActivity.class);
+                    Bundle b = new Bundle();
+                    ArrayList<String> parsedInfections = new ArrayList<>();
+                    for (Patient p : infectedPatients) {
+                        parsedInfections.add(p.toString());
+                    }
+                    b.putStringArrayList("infectionList", parsedInfections);
+                    intent.putExtra("BUNDLE", b);
+                    startActivity(intent);
+                }
+            });
+        }
         builder.show();
     }
 
@@ -115,18 +137,18 @@ public class ApConnectActivity extends AppCompatActivity {
                     }
                 }
 
-                totalCases = myDatabaseHelper.checkCases(connectivityList);
-                System.out.println(totalCases);
+                infectedPatients = myDatabaseHelper.checkCases(connectivityList);
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(totalCases == 0)
+                        if(infectedPatients.isEmpty())
                         {
                             alert("No Covid-19 infected patients were connected to this access point.", "SAFE");
                         }
                         else
                         {
-                            alert("Be safe, " + totalCases + " covid-19 infected patients were connected to this access point.", "WARNING");
+                            alert("Be safe, " + infectedPatients.size() + " covid-19 infected patients were connected to this access point.", "WARNING");
                         }
                     }
                 });
