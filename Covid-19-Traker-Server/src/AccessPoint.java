@@ -41,10 +41,8 @@ public class AccessPoint {
 
 	public static void main(String args[]) throws ClassNotFoundException 
 	{
-		connectivityList = new ArrayList<Patient>();
-		connectivityList.add(createPatient("Sara El Hakim", "71900300", "2a:5c:3b:7f:8d"));
-		connectivityList.add(createPatient("Joe Gerges", "71814106", "1a:2b:3c:4d:5e"));
-		connectivityList.add(createPatient("Khalil", "123465", "m3"));
+		SQLManager sqlManager = new SQLManager("Patients.db");
+		connectivityList = sqlManager.GetAllPatients();		
 		AccessPoint AccessPoint = null;
 		AccessPoint = new AccessPoint();
 		System.out.println("Waiting for clients ...");
@@ -54,9 +52,7 @@ public class AccessPoint {
 	public static Patient createPatient(String name, String phoneNumber, String macAddress) 
 	{
 		return new Patient(name, phoneNumber, macAddress);
-	}
-	
-	
+	}	
 
 	class ServerThread implements Runnable 
 	{
