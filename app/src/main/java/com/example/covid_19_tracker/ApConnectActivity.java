@@ -70,6 +70,7 @@ public class ApConnectActivity extends AppCompatActivity {
                     Bundle b = new Bundle();
                     ArrayList<String> parsedInfections = new ArrayList<>();
                     for (Patient p : infectedPatients) {
+                        p = myDatabaseHelper.getPatient(p.getName(), p.getNumber(), p.getMac());
                         parsedInfections.add(p.toString());
                     }
                     b.putStringArrayList("infectionList", parsedInfections);
@@ -86,7 +87,7 @@ public class ApConnectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.connect_to_ap);
         myDatabaseHelper = new DatabaseHelper(this);
-
+        infectedPatients = new ArrayList<Patient>();
         txtIpAddress = (TextInputEditText) findViewById(R.id.txtIpAddress);
         txtPortNumber = (TextInputEditText) findViewById(R.id.txtPortNumber);
         btnConnect = (Button) findViewById(R.id.btnConnect);
@@ -148,6 +149,10 @@ public class ApConnectActivity extends AppCompatActivity {
                         }
                         else
                         {
+                            for(Patient infected: infectedPatients)
+                            {
+                                myDatabaseHelper.addVisitedAp(infected.getMac(), SERVER_IP);
+                            }
                             alert("Be safe, " + infectedPatients.size() + " covid-19 infected patients were connected to this access point.", "WARNING");
                         }
                     }

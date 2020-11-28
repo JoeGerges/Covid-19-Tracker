@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         viewPatients = (Button) findViewById(R.id.viewPatients);
         btnApConnect = (Button) findViewById(R.id.btnApConnect);
         alertTextView = (TextView) findViewById(R.id.AlertTextView);
-
         myDatabaseHelper = new DatabaseHelper(this);
+        myDatabaseHelper.restart();
         addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
